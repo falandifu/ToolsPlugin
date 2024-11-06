@@ -1,0 +1,11 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.AssetTutorialPlugin.cpp.obj": [
+			"AssetTutorialPlugin.init.gen.cpp.obj",
+			"NormalDistribution.gen.cpp.obj",
+			"AssetTutorialPlugin.cpp.obj",
+			"NormalDistribution.cpp.obj"
+		]
+	}
+}

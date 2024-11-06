@@ -1,0 +1,29 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\intermediate\\build\\win64\\unrealeditor\\development\\assettutorialplugin\\module.assettutorialplugin.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\program\\plugincreatetest\\intermediate\\build\\win64\\plugincreatetesteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\intermediate\\build\\win64\\unrealeditor\\development\\assettutorialplugin\\definitions.assettutorialplugin.h",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\intermediate\\build\\win64\\unrealeditor\\inc\\assettutorialplugin\\uht\\assettutorialplugin.init.gen.cpp",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\intermediate\\build\\win64\\unrealeditor\\inc\\assettutorialplugin\\uht\\normaldistribution.gen.cpp",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\source\\assettutorialplugin\\public\\normaldistribution.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\coreuobject\\public\\uobject\\noexporttypes.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\core\\public\\math\\unitconversion.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\core\\public\\math\\unitconversion.inl",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\core\\public\\misc\\optionalfwd.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\core\\public\\internationalization\\polyglottextdata.h",
+            "d:\\work\\epic games\\unrealengine\\ue_5.1\\engine\\source\\runtime\\coreuobject\\public\\assetregistry\\arfilter.h",
+            "c:\\program files\\microsoft visual studio\\2022\\professional\\vc\\tools\\msvc\\14.41.34120\\include\\random",
+            "c:\\program files\\microsoft visual studio\\2022\\professional\\vc\\tools\\msvc\\14.41.34120\\include\\__msvc_int128.hpp",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\intermediate\\build\\win64\\unrealeditor\\inc\\assettutorialplugin\\uht\\normaldistribution.generated.h",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\source\\assettutorialplugin\\private\\assettutorialplugin.cpp",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\source\\assettutorialplugin\\public\\assettutorialplugin.h",
+            "f:\\program\\plugincreatetest\\plugins\\assettutorialplugin\\source\\assettutorialplugin\\private\\normaldistribution.cpp"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
