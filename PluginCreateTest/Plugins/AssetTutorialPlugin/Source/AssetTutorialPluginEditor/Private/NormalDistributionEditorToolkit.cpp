@@ -36,8 +36,8 @@ void FNormalDistributionEditorToolkit::InitEditor(const TArray<UObject*>& InObje
 				->AddTab("OutputLog", ETabState::OpenedTab)
 			)
 		);
-	FAssetEditorToolkit::InitAssetEditor(EToolkitMode::Standalone, {}, "NormalDistributionEditor", Layout, true, true, InObjects);
-}
+	FAssetEditorToolkit::InitAssetEditor(EToolkitMode::Standalone, {}, "NormalDistributionEditor", Layout, true, true, InObjects); //此关键函数必须在改子类中调用或覆盖
+}//InitAssetEditor 应该从您的编辑器类中调用，它可以创建默认布局、菜单和工具栏。NormalDistributionEditor 是唯一标识名称
 
 void FNormalDistributionEditorToolkit::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
 {
@@ -45,7 +45,7 @@ void FNormalDistributionEditorToolkit::RegisterTabSpawners(const TSharedRef<clas
 
 	WorkspaceMenuCategory = InTabManager->AddLocalWorkspaceMenuCategory(INVTEXT("Normal Distribution Editor"));
 
-	InTabManager->RegisterTabSpawner("NormalDistributionPDFTab", FOnSpawnTab::CreateLambda([=](const FSpawnTabArgs&)
+	InTabManager->RegisterTabSpawner("NormalDistributionPDFTab", FOnSpawnTab::CreateLambda([=](const FSpawnTabArgs&) 
 		{
 			return SNew(SDockTab)
 				[

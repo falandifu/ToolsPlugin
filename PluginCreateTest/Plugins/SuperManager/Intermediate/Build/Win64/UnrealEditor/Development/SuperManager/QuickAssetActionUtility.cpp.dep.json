@@ -1,0 +1,12 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\epicproject\\plugintest\\plugincreatetest\\plugins\\supermanager\\source\\supermanager\\public\\assetaction\\quickassetactionutility.cpp",
+        "ProvidedModule": "",
+        "Includes": [
+            "d:\\epicproject\\plugintest\\plugincreatetest\\plugins\\supermanager\\intermediate\\build\\win64\\unrealeditor\\development\\supermanager\\definitions.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

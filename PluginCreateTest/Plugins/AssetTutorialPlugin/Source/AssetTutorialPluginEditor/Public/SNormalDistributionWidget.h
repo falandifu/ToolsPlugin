@@ -11,7 +11,7 @@ class SNormalDistributionWidget : public SLeafWidget
 {
 public:
 	//利用一些 Slate 宏来使用 Slate 的声明语法来实例化我们的小部件，像 Mean 和 StandardDeviation 这样的Slate属性也可以使用委托对象进行初始化，这样我们就可以在需要时轮询其他对象来获取这些值
-	SLATE_BEGIN_ARGS(SNormalDistributionWidget)
+	SLATE_BEGIN_ARGS(SNormalDistributionWidget) //SWidget 的 widget 类的任何子类都需要使用 SLATE_BEGIN_ARGS 和 SLATE_END_ARS 来添加对 SNew 和 SAssignNew 的支持
 		: _Mean(0.5f)
 		, _StandardDeviation(0.2f)
 		{}

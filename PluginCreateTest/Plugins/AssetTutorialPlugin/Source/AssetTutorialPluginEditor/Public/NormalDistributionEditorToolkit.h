@@ -4,7 +4,7 @@
 #include "NormalDistribution.h"
 #include "Toolkits/AssetEditorToolkit.h"
 
-class FNormalDistributionEditorToolkit : public FAssetEditorToolkit
+class FNormalDistributionEditorToolkit : public FAssetEditorToolkit //该类为开发资源编辑器的基本类
 {
 public:
 	void InitEditor(const TArray<UObject*>& InObjects);

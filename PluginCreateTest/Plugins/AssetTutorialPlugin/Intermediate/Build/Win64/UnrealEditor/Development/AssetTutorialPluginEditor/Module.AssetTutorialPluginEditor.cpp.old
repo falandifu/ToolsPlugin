@@ -3,5 +3,6 @@
 #include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Intermediate/Build/Win64/UnrealEditor/Inc/AssetTutorialPluginEditor/UHT/NormalDistributionFactory.gen.cpp"
 #include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Source/AssetTutorialPluginEditor/Private/AssetTutorialPluginEditor.cpp"
 #include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Source/AssetTutorialPluginEditor/Private/NormalDistributionActions.cpp"
+#include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Source/AssetTutorialPluginEditor/Private/NormalDistributionEditorToolkit.cpp"
 #include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Source/AssetTutorialPluginEditor/Private/NormalDistributionFactory.cpp"
 #include "F:/Program/PluginCreateTest/Plugins/AssetTutorialPlugin/Source/AssetTutorialPluginEditor/Private/SNormalDistributionWidget.cpp"

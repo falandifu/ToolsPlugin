@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\epicproject\\plugintest\\plugincreatetest\\plugins\\supermanager\\source\\supermanager\\private\\supermanager.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\epicproject\\plugintest\\plugincreatetest\\intermediate\\build\\win64\\plugincreatetesteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "d:\\epicproject\\plugintest\\plugincreatetest\\plugins\\supermanager\\intermediate\\build\\win64\\unrealeditor\\development\\supermanager\\definitions.supermanager.h",
+            "d:\\epicproject\\plugintest\\plugincreatetest\\plugins\\supermanager\\source\\supermanager\\public\\supermanager.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
