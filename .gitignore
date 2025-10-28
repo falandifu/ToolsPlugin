@@ -1,5 +1,9 @@
-
-/PluginCreateTest/.idea/.idea.PluginCreateTest/.idea
-/PluginCreateTest/.vs
-/PluginCreateTest/Binaries/Win64
-/PluginCreateTest/Binaries
+/.idea/.idea.PluginCreateTest/.idea
+/.vs
+/Binaries/Win64
+/Binaries
+DeriveDataCache
+Intermediate
+Platforms
+Saved
+.vsconfig
