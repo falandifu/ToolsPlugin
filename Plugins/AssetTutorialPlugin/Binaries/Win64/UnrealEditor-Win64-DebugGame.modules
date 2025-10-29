@@ -1,0 +1,8 @@
+{
+	"BuildId": "27405482",
+	"Modules": 
+	{
+		"AssetTutorialPlugin": "UnrealEditor-AssetTutorialPlugin-Win64-DebugGame.dll",
+		"AssetTutorialPluginEditor": "UnrealEditor-AssetTutorialPluginEditor-Win64-DebugGame.dll"
+	}
+}

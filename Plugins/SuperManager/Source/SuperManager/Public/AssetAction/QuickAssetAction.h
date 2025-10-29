@@ -24,10 +24,12 @@ class SUPERMANAGER_API UQuickAssetAction : public UAssetActionUtility
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, Category = "Editor Scripting | Asset")
 	void DuplicateAssets(int32 NumberOfDuplicates);
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, Category = "Editor Scripting | Asset")
 	void AddPrefixs();
+	UFUNCTION(CallInEditor, Category = "Editor Scripting | Asset")
+	void RemoveUnusedAssets();
 	
 private:
 	TMap<UClass*, FString> PrefixsMap =
@@ -47,4 +49,7 @@ private:
 		{UNiagaraSystem::StaticClass(), TEXT("NS_")},
 		{UNiagaraEmitter::StaticClass(), TEXT("NE_")}
 	};
+
+	//修复文件移动后的重定向问题，直接更新重定向器避免多余的引用
+	void FixUpRedirectors();
 };

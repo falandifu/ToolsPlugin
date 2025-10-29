@@ -17,24 +17,27 @@ void PrintLog(const FString&& Message)
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *Message);
 }
 
-EAppReturnType::Type ShowMsgDialog(EAppMsgType::Type MsgType, const FString&& Message, bool bShowMsgAsWarning = true)
+namespace DebugHeader 
 {
-	if (bShowMsgAsWarning)
+	EAppReturnType::Type ShowMsgDialog(EAppMsgType::Type MsgType, const FString&& Message, bool bShowMsgAsWarning = true)
 	{
-		FText MsgTitle = FText::FromString(TEXT("Warning"));
-		return FMessageDialog::Open(MsgType, FText::FromString(Message), &MsgTitle);
+		if (bShowMsgAsWarning)
+		{
+			FText MsgTitle = FText::FromString(TEXT("Warning"));
+			return FMessageDialog::Open(MsgType, FText::FromString(Message), &MsgTitle);
+		}
+		else
+		{
+			return FMessageDialog::Open(MsgType, FText::FromString(Message));
+		}
 	}
-	else
+
+	void ShowNotifyInfo(const FString&& Message)
 	{
-		return FMessageDialog::Open(MsgType, FText::FromString(Message));
+		FNotificationInfo NotifyInfo(FText::FromString(Message));
+		NotifyInfo.bUseLargeFont = true;
+		NotifyInfo.FadeOutDuration = 4.f;
+
+		FSlateNotificationManager::Get().AddNotification(NotifyInfo);
 	}
-}
-
-void ShowNotifyInfo(const FString&& Message)
-{
-	FNotificationInfo NotifyInfo(FText::FromString(Message));
-	NotifyInfo.bUseLargeFont = true;
-	NotifyInfo.FadeOutDuration = 4.f;
-
-	FSlateNotificationManager::Get().AddNotification(NotifyInfo);
 }

@@ -29,10 +29,18 @@ public class SuperManager : ModuleRules
 				"Blutility",
                 "EditorScriptingUtilities",
 				"UMG",
-				"Niagara"
+				"Niagara",
+                "ContentBrowser",              // 内容浏览器扩展
+				"EditorScriptingUtilities",    // UEditorUtilityLibrary
+				"UnrealEd",                    // ObjectTools / 编辑器工具
+				"AssetTools",                  // FixupReferencers 等（如需要）
+				"ToolMenus",                    // 若使用 ToolMe
+                "AssetRegistry",            // <- for AssetRegistryModule.h / FARFilter / GetAssets   
+
+
 				// ... add other public dependencies that you statically link with here ...
 			}
-			);
+            );
 			
 		
 		PrivateDependencyModuleNames.AddRange(
@@ -41,13 +49,14 @@ public class SuperManager : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore",
+                "SlateCore"
+
 				// ... add private dependencies that you statically link with here ...	
 			}
-			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
+            );
+
+
+        DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
 				// ... add any modules that your module loads dynamically here ...
