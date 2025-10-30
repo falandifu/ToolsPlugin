@@ -14,7 +14,7 @@ void UQuickAssetAction::DuplicateAssets(int32 NumberOfDuplicates)
 {
 	if (NumberOfDuplicates <= 0)
 	{
-		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, std::move(TEXT("Please Enter A Valid Number")));
+		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, TEXT("Please Enter A Valid Number"));
 		return;
 	}
 
@@ -39,7 +39,7 @@ void UQuickAssetAction::DuplicateAssets(int32 NumberOfDuplicates)
 	if (Counter > 0)
 	{
 		//Print(std::move(FColor::Green), std::move(TEXT("Successfully Duplicated " + FString::FromInt(Counter) + "Files")));
-		DebugHeader::ShowNotifyInfo(std::move(TEXT("Successfully Duplicated " + FString::FromInt(Counter) + " Files")));
+		DebugHeader::ShowNotifyInfo(TEXT("Successfully Duplicated " + FString::FromInt(Counter) + " Files"));
 	}
 }
 
@@ -56,14 +56,14 @@ void UQuickAssetAction::AddPrefixs()
 
 		if (!PrefixFound || PrefixFound->IsEmpty())
 		{
-			DebugHeader::ShowMsgDialog(EAppMsgType::Ok, std::move(TEXT("Failed To Find Prefix For Class ") + SelectedObject->GetClass()->GetName()));
+			DebugHeader::ShowMsgDialog(EAppMsgType::Ok,TEXT("Failed To Find Prefix For Class ") + SelectedObject->GetClass()->GetName());
 			continue;
 		}
 		FString OldName = SelectedObject->GetName();
 
 		if (OldName.StartsWith(*PrefixFound)) //查找两个字符串是否相同，默认第二个参数不填的情况下忽略大小写，比较长度为PrefixFound字符串的长度
 		{
-			DebugHeader::ShowMsgDialog(EAppMsgType::Ok, std::move(OldName + TEXT(" Already Has Prefix Added")));
+			DebugHeader::ShowMsgDialog(EAppMsgType::Ok, OldName + TEXT(" Already Has Prefix Added"));
 			continue;
 		}
 
@@ -79,7 +79,7 @@ void UQuickAssetAction::AddPrefixs()
 	}
 
 	if(count>0)
-		DebugHeader::ShowNotifyInfo(std::move(TEXT("Successfully Renamed " + FString::FromInt(count) + " Assets")));
+		DebugHeader::ShowNotifyInfo(TEXT("Successfully Renamed " + FString::FromInt(count) + " Assets"));
 }
 
 void UQuickAssetAction::RemoveUnusedAssets()
@@ -102,37 +102,51 @@ void UQuickAssetAction::RemoveUnusedAssets()
 
 	if (UnuesdAssetsData.Num()==0)
 	{
-		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, std::move(TEXT("No unuesd asset found among selected assets")),false);
+		DebugHeader::ShowMsgDialog(EAppMsgType::Ok,TEXT("No unuesd asset found among selected assets"),false);
 		return;
 	}
 
 	int32 NumberOfUnuesdAsset = ObjectTools::DeleteAssets(UnuesdAssetsData);
 	if (NumberOfUnuesdAsset == 0) return;
-	DebugHeader::ShowNotifyInfo(std::move(TEXT("Successfully delete") + FString::FromInt(NumberOfUnuesdAsset) + TEXT("unuesd asset")));
+	DebugHeader::ShowNotifyInfo(TEXT("Successfully delete") + FString::FromInt(NumberOfUnuesdAsset) + TEXT("unuesd asset"));
 }
 
 void UQuickAssetAction::FixUpRedirectors()
 {
 	TArray<UObjectRedirector*> RedirectorToFixArray;
+	TArray<UObject*> LoadedRedirectorObjects; // 保持 UObject 引用，防止 GC 或被释放
 
 	FAssetRegistryModule& AssetRegistryModule = FModuleManager::Get().LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 
 	TArray<FAssetData> OutRedirectors;
 	FARFilter Filter;
 	Filter.bRecursivePaths = true;
-	Filter.ClassPaths.Emplace("ObjectRedirector");
-	Filter.PackagePaths.Emplace("/Game");
+	// 使用类路径名而不是硬编码字符串
+	Filter.ClassPaths.Emplace(UObjectRedirector::StaticClass()->GetClassPathName());
+	Filter.PackagePaths.Emplace(TEXT("/Game"));
 
 	AssetRegistryModule.Get().GetAssets(Filter, OutRedirectors);
 
 	for (const FAssetData& OutRedirector : OutRedirectors)
 	{
-		if (UObjectRedirector* RedirectorToFix = Cast<UObjectRedirector>(OutRedirector.GetAsset()))
+		// 通过 GetAsset() 加载并保存 UObject 引用到数组，保证其在后续处理期间存活
+		if (UObject* AssetObj = OutRedirector.GetAsset())
 		{
-			RedirectorToFixArray.Add(RedirectorToFix);
+			LoadedRedirectorObjects.Add(AssetObj);
+			if (UObjectRedirector* RedirectorToFix = Cast<UObjectRedirector>(AssetObj))
+			{
+				RedirectorToFixArray.Add(RedirectorToFix);
+			}
 		}
 	}
 
+	if (RedirectorToFixArray.Num() == 0)
+	{
+		// 没有要修复的重定向器，直接返回
+		return;
+	}
+
+	// 确保 AssetTools 模块存在后再调用
 	FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 	AssetToolsModule.Get().FixupReferencers(RedirectorToFixArray);
 }

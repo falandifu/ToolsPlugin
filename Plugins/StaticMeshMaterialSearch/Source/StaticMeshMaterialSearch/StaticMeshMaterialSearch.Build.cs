@@ -26,9 +26,11 @@ public class StaticMeshMaterialSearch : ModuleRules
 			new string[]
 			{
 				"Core",
+                "ContentBrowser",              // ÄÚÈÝä¯ÀÀÆ÷À©Õ¹
+
 				// ... add other public dependencies that you statically link with here ...
 			}
-			);
+            );
 			
 		
 		PrivateDependencyModuleNames.AddRange(

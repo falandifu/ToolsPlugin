@@ -28,6 +28,8 @@ public:
 	void DuplicateAssets(int32 NumberOfDuplicates);
 	UFUNCTION(CallInEditor, Category = "Editor Scripting | Asset")
 	void AddPrefixs();
+
+	//删除所选资源中未被引用的资源
 	UFUNCTION(CallInEditor, Category = "Editor Scripting | Asset")
 	void RemoveUnusedAssets();
 	

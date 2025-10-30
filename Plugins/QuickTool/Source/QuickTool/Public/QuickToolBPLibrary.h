@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -27,6 +27,27 @@ class UQuickToolBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "QuickTool sample test testing"), Category = "QuickTool")
-	static float QuickToolSampleFunction(float Param);
+#pragma region 阵型
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (DisplayName ="简易阵列计算", Keywords = "Rows and columns"), Category = "阵型")
+	static void SimpleArrayCalculation(float& X, float& Y, int Row, int Index, float RowDistance = 50.f, float ColumnsDistance = 50.f, float RowDistanceRandomMin = 0.f, float RowDistanceRandomMax = 0.f, 
+		float CoumnDistanceRandomMin = 0.f, float CoumnDistanceRandomMax = 0.f);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (DisplayName = "阵列计算(以Actor为中心)"), Category = "阵型")
+    static void CalculateArrayPosition(
+        float& X,
+        float& Y,
+        int32 Rows,
+        int32 Columns,
+        int32 Index,
+        float RowDistance,
+        float ColumnDistance,
+        float RowRandomMin,
+        float RowRandomMax,
+        float ColumnRandomMin,
+        float ColumnRandomMax,
+        FRandomStream PositionStream // Pass by reference to allow state changes
+    );
+
+#pragma endregion
+
 };

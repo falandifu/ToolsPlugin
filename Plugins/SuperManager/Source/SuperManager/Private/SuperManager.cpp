@@ -1,109 +1,118 @@
-#include "SuperManager.h"
+ï»¿#include "SuperManager.h"
 #include "ContentBrowserModule.h"
-#include "IContentBrowserSingleton.h"
-#include "Framework/MultiBox/MultiBoxBuilder.h"
-#include "Framework/MultiBox/MultiBoxExtender.h"
-#include "EditorUtilityLibrary.h"
-#include "AssetRegistry/AssetData.h"
-#include "AssetAction/QuickAssetAction.h"
-#include "Modules/ModuleManager.h"
+#include "EditorAssetLibrary.h"
+#include "ObjectTools.h"
+#include "DebugHeader.h"
+
+#define LOCTEXT_NAMESPACE "FSuperManagerModule"
 
 void FSuperManagerModule::StartupModule()
 {
-	// ×¢²áÄÚÈİä¯ÀÀÆ÷×Ê²úÊÓÍ¼ÓÒ¼ü²Ëµ¥À©Õ¹
-	if (!FModuleManager::Get().IsModuleLoaded("ContentBrowser"))
-	{
-		FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
-	}
-
-	FContentBrowserModule& ContentBrowserModule = FModuleManager::GetModuleChecked<FContentBrowserModule>("ContentBrowser");
-
-	// ½«Î¯ÍĞÌí¼Óµ½ Content Browser µÄ Extender ÁĞ±í£¬²¢±£´æÊı×éË÷ÒıÒÔ±ãĞ¶ÔØÊ±ÒÆ³ı
-	TArray<FContentBrowserMenuExtender_SelectedAssets>& Extenders = ContentBrowserModule.GetAllAssetViewContextMenuExtenders();
-	AssetViewExtenderIndex = Extenders.Add(FContentBrowserMenuExtender_SelectedAssets::CreateRaw(this, &FSuperManagerModule::OnExtendContentBrowserAssetSelectionMenu));
+	InitCBMenuExtention();
 }
 
-void FSuperManagerModule::ShutdownModule()
+#pragma region ContentBrowserMenuExtension
+
+void FSuperManagerModule::InitCBMenuExtention()
 {
-	// Ğ¶ÔØÀ©Õ¹
-	if (FModuleManager::Get().IsModuleLoaded("ContentBrowser"))
-	{
-		FContentBrowserModule& ContentBrowserModule = FModuleManager::GetModuleChecked<FContentBrowserModule>("ContentBrowser");
-		TArray<FContentBrowserMenuExtender_SelectedAssets>& Extenders = ContentBrowserModule.GetAllAssetViewContextMenuExtenders();
-		if (Extenders.IsValidIndex(AssetViewExtenderIndex))
-		{
-			Extenders.RemoveAt(AssetViewExtenderIndex);
-			AssetViewExtenderIndex = INDEX_NONE;
-		}
-	}
+	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
+	TArray<FContentBrowserMenuExtender_SelectedPaths>& Extenders = ContentBrowserModule.GetAllPathViewContextMenuExtenders();
+
+	FContentBrowserMenuExtender_SelectedPaths CustomCBMenuDelegate;
+	CustomCBMenuDelegate.BindRaw(this, &FSuperManagerModule::OnExtendContentBrowserAssetSelectionMenu);
+
+	Extenders.Add(CustomCBMenuDelegate);
+
 }
 
-// ·µ»ØÒ»¸ö Extender£¬°üº¬ÎÒÃÇÒªÌí¼ÓµÄ²Ëµ¥Ïî¡£SelectedAssets ÊÇÓÒ¼üÊ±µÄÉÏÏÂÎÄÑ¡Ôñ¡£
-TSharedRef<FExtender> FSuperManagerModule::OnExtendContentBrowserAssetSelectionMenu(const TArray<FAssetData>& SelectedAssets)
+// è¿”å›ä¸€ä¸ª Extenderï¼ŒåŒ…å«æˆ‘ä»¬è¦æ·»åŠ çš„èœå•é¡¹ã€‚SelectedAssets æ˜¯å³é”®æ—¶çš„ä¸Šä¸‹æ–‡é€‰æ‹©ã€‚
+TSharedRef<FExtender> FSuperManagerModule::OnExtendContentBrowserAssetSelectionMenu(const TArray<FString>& SelectedPaths)
 {
 	TSharedRef<FExtender> Extender = MakeShared<FExtender>();
 
-	// ÔÚºÏÊÊµÄ¹³µãºóÌí¼Ó²Ëµ¥Ïî£¨×Ö·û´®¹³µã¿É¸ù¾İĞèÒªµ÷Õû£©
-	Extender->AddMenuExtension(
-		"GetAssetActions", // ¹³µãÃû³Æ£¨³£¼û×ö·¨£©
-		EExtensionHook::After,
-		nullptr,
-		FMenuExtensionDelegate::CreateLambda([SelectedAssets](FMenuBuilder& MenuBuilder)
-			{
-				MenuBuilder.AddMenuEntry(
-					FText::FromString("Remove Unused Assets (SuperManager)"),
-					FText::FromString("É¾³ıÎ´±»ÒıÓÃµÄËùÑ¡×Ê²ú£¨Ê¹ÓÃ SuperManager ¹¤¾ß£©"),
-					FSlateIcon(),
-					FUIAction(
-						// µã»÷Ê±Ö´ĞĞµÄ lambda£ºÖ±½Ó½«Ñ¡ÖĞµÄ FAssetData ´«¸ø UQuickAssetAction µÄ·½·¨Ö´ĞĞÉ¾³ıÂß¼­
-						FExecuteAction::CreateLambda([SelectedAssets]()
-							{
-								// ´´½¨ UQuickAssetAction ÊµÀı²¢µ÷ÓÃ RemoveUnusedAssets »ò×Ô¶¨Òå·½·¨
-								UQuickAssetAction* Utility = NewObject<UQuickAssetAction>(GetTransientPackage(), UQuickAssetAction::StaticClass());
-								if (Utility)
-								{
-									// ³¢ÊÔµ÷ÓÃÓÅÏÈÊµÏÖµÄ½ÓÊÕ SelectedAssets µÄ·½·¨£¨ÈôÎ´ÊµÏÖ£¬¿ÉÊ¹ÓÃÏÖÓĞ RemoveUnusedAssets£©
-									// Èç¹û UQuickAssetAction Ìá¹© RemoveUnusedAssetsFrom(const TArray<FAssetData>&)£¬ÇëÊ¹ÓÃËü¡£
-									// ·ñÔò£¬ÏÈ½«×Ê²úÉèÖÃÎªµ±Ç°Ñ¡ÖĞÔÙµ÷ÓÃ RemoveUnusedAssets¡£
-									bool bCalled = false;
-									// ÔËĞĞÊ±Í¨¹ı·´Éä¼ì²é²¢µ÷ÓÃ£¨±àÒëÆÚ±£Ö¤´æÔÚ¸üºÃ£©
-									if (Utility->GetClass()->FindFunctionByName("RemoveUnusedAssetsFrom"))
-									{
-										// ĞèÒªÔÚ UQuickAssetAction ÖĞÊµÏÖ RemoveUnusedAssetsFrom ²ÅÄÜÖ±½Óµ÷ÓÃ
-										struct FDynamicParams { const TArray<FAssetData>* Assets; };
-										FDynamicParams Params{ &SelectedAssets };
-										Utility->ProcessEvent(Utility->GetClass()->FindFunctionByName("RemoveUnusedAssetsFrom"), &Params);
-										bCalled = true;
-									}
+	if (SelectedPaths.Num() > 0)
+	{
+		Extender->AddMenuExtension(
+			FName("Delete"),
+			EExtensionHook::After,
+			nullptr,
+			FMenuExtensionDelegate::CreateRaw(this, &FSuperManagerModule::AddCBMenuEntry));
 
-									if (!bCalled)
-									{
-										// ÍËÂ·£º°Ñ FAssetData ×ªÎª UObject* ²¢ÉèÖÃÎªµ±Ç°Ñ¡ÖĞ£¬È»ºóµ÷ÓÃ RemoveUnusedAssets()
-										TArray<UObject*> ObjectsToSelect;
-										ObjectsToSelect.Reserve(SelectedAssets.Num());
-										for (const FAssetData& AD : SelectedAssets)
-										{
-											if (UObject* Obj = AD.GetAsset())
-											{
-												ObjectsToSelect.Add(Obj);
-											}
-										}
-
-										if (ObjectsToSelect.Num() > 0)
-										{
-											UEditorUtilityLibrary::SetSelectedAssets(ObjectsToSelect);
-										}
-
-										Utility->RemoveUnusedAssets();
-									}
-								}
-							})
-					)
-				);
-			})
-	);
+		FolderPathsSelected = SelectedPaths;
+	}
 
 	return Extender;
+}
+
+void FSuperManagerModule::AddCBMenuEntry(FMenuBuilder& MenuBuilder)
+{
+	MenuBuilder.AddMenuEntry(
+		FText::FromString(TEXT("Delete Unused Assets")),
+		FText::FromString(TEXT("Safely delete all unused assets under folder")),
+		FSlateIcon(),
+		FExecuteAction::CreateRaw(this, &FSuperManagerModule::OnDeleteUnusedAssetsButtonClicked));
+			
+}
+
+//å®ç°åˆ é™¤æ–‡ä»¶å¤¹ä¸­æœªä½¿ç”¨èµ„æºçš„åŠŸèƒ½
+void FSuperManagerModule::OnDeleteUnusedAssetsButtonClicked()
+{
+	if (FolderPathsSelected.Num() > 1)
+	{
+		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, TEXT("åªèƒ½é€‰æ‹©ä¸€ä¸ªæ–‡ä»¶å¤¹åˆ é™¤æœªä½¿ç”¨çš„èµ„æº"));
+		return;
+	}
+
+	TArray<FString>AssetsPathNames = UEditorAssetLibrary::ListAssets(FolderPathsSelected[0]);
+	if (AssetsPathNames.Num() == 0)
+	{
+		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, TEXT("åœ¨æ‰€é€‰æ–‡ä»¶å¤¹ä¸­æœªæ‰¾åˆ°èµ„æº"));
+		return;
+	}
+
+	FString Message = FString::Printf(TEXT("æ€»å…± %d ä¸ªæ–‡ä»¶\nç¡®å®šæ¥å—å—?"), AssetsPathNames.Num());
+	//æ‹¼æ¥ä¸­æ–‡å­—ç¬¦æœ€å¥½å°†æ–‡ä»¶ç¼–ç ç±»å‹è½¬ä¸ºUTF-8
+	EAppReturnType::Type ConfirmResult = DebugHeader::ShowMsgDialog(EAppMsgType::OkCancel, Message);
+
+	if (ConfirmResult == EAppReturnType::Cancel) return;
+
+	TArray<FAssetData> UnusedAssetsDataArray;
+
+	for (const FString& AssetPathName : AssetsPathNames)
+	{
+		if (AssetPathName.Contains(TEXT("Developers")) || AssetPathName.Contains(TEXT("Collections")))
+		{
+			continue;
+		}
+
+		if (!UEditorAssetLibrary::DoesAssetExist(AssetPathName)) continue;
+
+		TArray<FString> AssetReferencers =
+		UEditorAssetLibrary::FindPackageReferencersForAsset(AssetPathName);
+
+		if (AssetReferencers.Num() == 0)
+		{
+			const FAssetData UnusedAssetData = UEditorAssetLibrary::FindAssetData(AssetPathName);
+			UnusedAssetsDataArray.Add(UnusedAssetData);
+		}
+	}
+
+	if (UnusedAssetsDataArray.Num() > 0)
+	{
+		ObjectTools::DeleteAssets(UnusedAssetsDataArray);
+	}
+	else
+	{
+		DebugHeader::ShowMsgDialog(EAppMsgType::Ok, TEXT("åœ¨æ‰€é€‰æ–‡ä»¶å¤¹ä¸­æœªæ‰¾åˆ°èµ„æº"));
+	}
+
+}
+
+#pragma endregion
+
+void FSuperManagerModule::ShutdownModule()
+{
+	// å¸è½½æ‰©å±•
 }
 
 IMPLEMENT_MODULE(FSuperManagerModule, SuperManager)
